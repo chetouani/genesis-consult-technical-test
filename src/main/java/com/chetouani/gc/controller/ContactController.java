@@ -4,6 +4,8 @@ import com.chetouani.gc.dto.request.ContactRequest;
 import com.chetouani.gc.entity.Contact;
 import com.chetouani.gc.mapper.ContactMapper;
 import com.chetouani.gc.service.ContactService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,13 +17,14 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @RestController()
 @RequestMapping(path = "/contact", produces = MediaType.APPLICATION_JSON_VALUE)
-
+@Tag(name = "Contact management")
 public class ContactController {
 
     private ContactService service;
     private ContactMapper mapper;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Add a contact")
     public ResponseEntity<Contact> addContact(@Valid @RequestBody ContactRequest contactRequest) {
         Contact contact = this.mapper.map(contactRequest);
         Contact contactAdded = this.service.add(contact);
@@ -30,6 +33,7 @@ public class ContactController {
     }
 
     @PutMapping(path = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update a contact")
     public ResponseEntity<Contact> updateContact(@PathVariable(name = "id") Long id,
                                                  @Valid @RequestBody ContactRequest contactRequest) {
         Contact contact = this.mapper.map(contactRequest);
@@ -39,6 +43,7 @@ public class ContactController {
     }
 
     @DeleteMapping("{id}")
+    @Operation(summary = "Delete a contact")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteContact(@PathVariable(name = "id") Long id) {
         this.service.delete(id);
