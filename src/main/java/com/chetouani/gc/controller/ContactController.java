@@ -28,7 +28,8 @@ public class ContactController {
     @Operation(summary = "Add a contact")
     public ResponseEntity<Contact> addContact(@Valid @RequestBody ContactRequest contactRequest) {
         Contact contact = this.mapper.map(contactRequest);
-        if (contact.getContractType().equals(Contact.Type.FREELANCE) && contact.getTvaNumber().isBlank()) {
+        if (contact.getContractType().equals(Contact.Type.FREELANCE)
+                && (contact.getTvaNumber() == null || contact.getTvaNumber().isBlank())) {
             throw new IntegrityViolationException("A freelance contact shall have a TVA number");
         }
 
