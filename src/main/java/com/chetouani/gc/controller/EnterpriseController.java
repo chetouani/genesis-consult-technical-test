@@ -24,7 +24,7 @@ public class EnterpriseController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add an enterprise")
-    public ResponseEntity<Enterprise> addCompany(@Valid @RequestBody EnterpriseRequest request) {
+    public ResponseEntity<Enterprise> addEnterprise(@Valid @RequestBody EnterpriseRequest request) {
         Enterprise enterprise = this.enterpriseMapper.map(request);
         Enterprise enterpriseAdded = this.service.add(enterprise);
 
@@ -33,8 +33,8 @@ public class EnterpriseController {
 
     @PostMapping(path = "{id}/contact", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add a contact to an enterprise")
-    public ResponseEntity<Enterprise> addContactToCompany(@PathVariable(name = "id") Long id,
-                                                          @Valid @RequestBody ContactIdRequest request) {
+    public ResponseEntity<Enterprise> addContactToEnterprise(@PathVariable(name = "id") Long id,
+                                                             @Valid @RequestBody ContactIdRequest request) {
         Enterprise enterprise = this.service.addContact(id, request.contactId());
 
         return ResponseEntity.ok(enterprise);
@@ -42,8 +42,8 @@ public class EnterpriseController {
 
     @PutMapping(path = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update an enterprise")
-    public ResponseEntity<Enterprise> updateCompany(@PathVariable(name = "id") Long id,
-                                                    @Valid @RequestBody EnterpriseRequest request) {
+    public ResponseEntity<Enterprise> updateEnterprise(@PathVariable(name = "id") Long id,
+                                                       @Valid @RequestBody EnterpriseRequest request) {
         Enterprise enterprise = this.enterpriseMapper.map(request);
         Enterprise enterpriseUpdated = this.service.update(id, enterprise);
 
