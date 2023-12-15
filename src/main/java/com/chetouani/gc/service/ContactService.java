@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class ContactService implements ServiceInterface<Contact> {
 
+    static final String ENTITY_NAME = "Contact";
     private ContactRepositoryInterface repository;
 
     @Override
@@ -18,7 +19,9 @@ public class ContactService implements ServiceInterface<Contact> {
 
     @Override
     public Contact update(Long id, Contact contact) {
-        Contact existingContact = this.repository.findById(id).orElseThrow();
+        checkIfEntityExist(repository, ENTITY_NAME, id);
+
+        Contact existingContact = this.repository.findById(id).get();
 
         existingContact.setLastName(contact.getLastName());
         existingContact.setFirstName(contact.getFirstName());
@@ -30,6 +33,8 @@ public class ContactService implements ServiceInterface<Contact> {
     }
 
     public void delete(Long id) {
+        checkIfEntityExist(repository, ENTITY_NAME, id);
+
         this.repository.deleteById(id);
     }
 

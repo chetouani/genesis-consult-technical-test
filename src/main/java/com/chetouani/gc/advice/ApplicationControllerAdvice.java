@@ -1,7 +1,7 @@
 package com.chetouani.gc.advice;
 
 import com.chetouani.gc.dto.response.ErrorResponse;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.chetouani.gc.exception.EntityNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @ControllerAdvice
 class ApplicationControllerAdvice extends ResponseEntityExceptionHandler {
@@ -26,18 +25,11 @@ class ApplicationControllerAdvice extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(100, e.getMessage()));
     }
-    @ExceptionHandler({NoSuchElementException.class})
-    public @ResponseBody ResponseEntity<ErrorResponse> handleException(NoSuchElementException e) {
+    @ExceptionHandler({EntityNotFoundException.class})
+    public @ResponseBody ResponseEntity<ErrorResponse> handleException(EntityNotFoundException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(102, "Entity not found"));
-    }
-
-    @ExceptionHandler({JsonMappingException.class})
-    public @ResponseBody ResponseEntity<ErrorResponse> handleException(JsonMappingException e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(103, "Json malformed"));
+                .body(new ErrorResponse(102, e.getMessage()));
     }
 
     @Override
