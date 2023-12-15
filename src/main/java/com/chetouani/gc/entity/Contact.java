@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @ToString
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UC_CONTACT", columnNames = {"lastName", "firstName", "tvaNumber"})})
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UC_CONTACT", columnNames = {"lastName", "firstName", "contractType"})})
 public class Contact implements Serializable {
 
     @Id
