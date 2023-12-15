@@ -3,6 +3,7 @@ package com.chetouani.gc.advice;
 import com.chetouani.gc.dto.response.ErrorResponse;
 import com.chetouani.gc.exception.EntityNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -25,11 +26,19 @@ class ApplicationControllerAdvice extends ResponseEntityExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(100, e.getMessage()));
     }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public @ResponseBody ResponseEntity<ErrorResponse> handleException(DataIntegrityViolationException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(102, "This entity already exist"));
+    }
+
     @ExceptionHandler({EntityNotFoundException.class})
     public @ResponseBody ResponseEntity<ErrorResponse> handleException(EntityNotFoundException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(102, e.getMessage()));
+                .body(new ErrorResponse(103, e.getMessage()));
     }
 
     @Override
