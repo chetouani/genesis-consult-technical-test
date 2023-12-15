@@ -2,6 +2,7 @@ package com.chetouani.gc.advice;
 
 import com.chetouani.gc.dto.response.ErrorResponse;
 import com.chetouani.gc.exception.EntityNotFoundException;
+import com.chetouani.gc.exception.IntegrityViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +40,13 @@ class ApplicationControllerAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(103, e.getMessage()));
+    }
+
+    @ExceptionHandler({IntegrityViolationException.class})
+    public @ResponseBody ResponseEntity<ErrorResponse> handleException(IntegrityViolationException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(104, e.getMessage()));
     }
 
     @Override

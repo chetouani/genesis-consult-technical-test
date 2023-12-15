@@ -2,6 +2,7 @@ package com.chetouani.gc.controller;
 
 import com.chetouani.gc.dto.request.ContactRequest;
 import com.chetouani.gc.entity.Contact;
+import com.chetouani.gc.exception.IntegrityViolationException;
 import com.chetouani.gc.mapper.ContactMapper;
 import com.chetouani.gc.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +28,10 @@ public class ContactController {
     @Operation(summary = "Add a contact")
     public ResponseEntity<Contact> addContact(@Valid @RequestBody ContactRequest contactRequest) {
         Contact contact = this.mapper.map(contactRequest);
+        if (contact.getContractType().equals(Contact.Type.FREELANCE) && contact.getTvaNumber().isBlank()) {
+            throw new IntegrityViolationException("A freelance contact shall have a TVA number");
+        }
+
         Contact contactAdded = this.service.add(contact);
 
         return ResponseEntity.ok(contactAdded);
