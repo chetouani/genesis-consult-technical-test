@@ -58,4 +58,16 @@ public class EnterpriseService implements ServiceInterface<Enterprise> {
 
         return this.enterpriseRepository.save(selectedEnterprise);
     }
+
+    public Enterprise getById(Long id) {
+        checkIfEntityExist(enterpriseRepository, ENTITY_NAME, id);
+
+        return this.enterpriseRepository.findById(id).get();
+    }
+
+    public List<Contact> getContacts(Long id) {
+        checkIfEntityExist(enterpriseRepository, ENTITY_NAME, id);
+
+        return this.enterpriseRepository.findById(id).get().getContacts();
+    }
 }

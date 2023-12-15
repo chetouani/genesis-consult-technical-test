@@ -1,9 +1,14 @@
 package com.chetouani.gc.controller;
 
 import com.chetouani.gc.dto.request.ContactRequest;
+import com.chetouani.gc.dto.response.ContactResponse;
+import com.chetouani.gc.dto.response.EnterpriseResponse;
 import com.chetouani.gc.entity.Contact;
+import com.chetouani.gc.entity.Enterprise;
 import com.chetouani.gc.exception.IntegrityViolationException;
 import com.chetouani.gc.mapper.ContactMapper;
+import com.chetouani.gc.mapper.ContactResponseMapper;
+import com.chetouani.gc.mapper.EnterpriseResponseMapper;
 import com.chetouani.gc.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @AllArgsConstructor
 @RestController()
@@ -23,6 +31,28 @@ public class ContactController {
 
     private ContactService service;
     private ContactMapper mapper;
+    private ContactResponseMapper contactResponseMapper;
+    private EnterpriseResponseMapper enterpriseResponseMapper;
+
+    @GetMapping("{id}")
+    @Operation(summary = "Get contact by id")
+    public ResponseEntity<ContactResponse> getContactById(@PathVariable(name = "id") Long id) {
+        Contact contact = this.service.getById(id);
+        ContactResponse contactResponse = this.contactResponseMapper.map(contact);
+
+        return ResponseEntity.ok(contactResponse);
+    }
+
+    @GetMapping("{id}/enterprises")
+    @Operation(summary = "Get enterprises list for a specific contact id")
+    public ResponseEntity<List<EnterpriseResponse>> getEnterprises(@PathVariable(name = "id") Long id) {
+        List<Enterprise> enterprise = this.service.getEnterprises(id);
+        List<EnterpriseResponse> enterpriseResponse = enterprise.stream()
+                .map(this.enterpriseResponseMapper::map)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(enterpriseResponse);
+    }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add a contact")

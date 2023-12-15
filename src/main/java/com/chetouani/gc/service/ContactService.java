@@ -1,9 +1,12 @@
 package com.chetouani.gc.service;
 
 import com.chetouani.gc.entity.Contact;
+import com.chetouani.gc.entity.Enterprise;
 import com.chetouani.gc.repository.ContactRepositoryInterface;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -38,4 +41,15 @@ public class ContactService implements ServiceInterface<Contact> {
         this.repository.deleteById(id);
     }
 
+    public Contact getById(Long id) {
+        checkIfEntityExist(repository, ENTITY_NAME, id);
+
+        return this.repository.findById(id).get();
+    }
+
+    public List<Enterprise> getEnterprises(Long id) {
+        checkIfEntityExist(repository, ENTITY_NAME, id);
+
+        return this.repository.findById(id).get().getEnterprises();
+    }
 }
