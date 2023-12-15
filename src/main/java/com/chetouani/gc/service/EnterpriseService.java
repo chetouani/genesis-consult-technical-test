@@ -2,6 +2,7 @@ package com.chetouani.gc.service;
 
 import com.chetouani.gc.entity.Contact;
 import com.chetouani.gc.entity.Enterprise;
+import com.chetouani.gc.exception.IntegrityViolationException;
 import com.chetouani.gc.repository.ContactRepositoryInterface;
 import com.chetouani.gc.repository.EnterpriseRepositoryInterface;
 import lombok.AllArgsConstructor;
@@ -42,12 +43,16 @@ public class EnterpriseService implements ServiceInterface<Enterprise> {
         Contact selectedContact = this.contactRepository.findById(contactId).get();
 
         List<Enterprise> enterprises = selectedContact.getEnterprises();
+        List<Contact> contacts = selectedEnterprise.getContacts();
+
+        if (enterprises.contains(selectedEnterprise) || contacts.contains(selectedContact)) {
+            throw new IntegrityViolationException("This contact is already part of the enterprise");
+        }
+
         enterprises.add(selectedEnterprise);
         selectedContact.setEnterprises(enterprises);
 
         this.contactRepository.save(selectedContact);
-
-        List<Contact> contacts = selectedEnterprise.getContacts();
         contacts.add(selectedContact);
         selectedEnterprise.setContacts(contacts);
 
