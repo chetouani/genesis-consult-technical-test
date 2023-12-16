@@ -8,7 +8,7 @@ import com.chetouani.gc.repository.EnterpriseRepositoryInterface;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -42,19 +42,17 @@ public class EnterpriseService implements ServiceInterface<Enterprise> {
         Enterprise selectedEnterprise = this.enterpriseRepository.findById(enterpriseId).get();
         Contact selectedContact = this.contactRepository.findById(contactId).get();
 
-        List<Enterprise> enterprises = selectedContact.getEnterprises();
-        List<Contact> contacts = selectedEnterprise.getContacts();
 
-        if (enterprises.contains(selectedEnterprise) || contacts.contains(selectedContact)) {
+        Set<Enterprise> enterprises = selectedContact.getEnterprises();
+        Set<Contact> contacts = selectedEnterprise.getContacts();
+
+        if (enterprises.contains(selectedEnterprise)
+                || contacts.contains(selectedContact)) {
             throw new IntegrityViolationException("This contact is already part of the enterprise");
         }
 
         enterprises.add(selectedEnterprise);
-        selectedContact.setEnterprises(enterprises);
-
-        this.contactRepository.save(selectedContact);
         contacts.add(selectedContact);
-        selectedEnterprise.setContacts(contacts);
 
         return this.enterpriseRepository.save(selectedEnterprise);
     }

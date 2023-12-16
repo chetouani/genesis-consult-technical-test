@@ -9,7 +9,9 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @Setter
@@ -42,7 +44,7 @@ public class Contact implements Serializable {
     //@JsonBackReference
     @JsonIgnore
     @ManyToMany
-    private List<Enterprise> enterprises = new ArrayList<>();
+    private Set<Enterprise> enterprises = new HashSet<>();
 
     public enum Type {
         EMPLOYEE, FREELANCE;

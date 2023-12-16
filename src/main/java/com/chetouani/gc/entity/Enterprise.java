@@ -8,7 +8,9 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @Setter
@@ -30,6 +32,6 @@ public class Enterprise implements Serializable {
 
     //@JsonManagedReference
     @ManyToMany(mappedBy = "enterprises")
-    private List<Contact> contacts = new ArrayList<>();
+    private Set<Contact> contacts = new HashSet<>();
 
 }
