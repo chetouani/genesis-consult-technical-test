@@ -50,6 +50,6 @@ public class ContactService implements ServiceInterface<Contact> {
     public List<Enterprise> getEnterprises(Long id) {
         checkIfEntityExist(repository, ENTITY_NAME, id);
 
-        return this.repository.findById(id).get().getEnterprises();
+        return this.repository.findById(id).get().getEnterprises().stream().toList();
     }
 }
