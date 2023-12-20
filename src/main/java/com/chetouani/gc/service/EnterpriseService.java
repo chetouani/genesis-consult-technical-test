@@ -8,7 +8,7 @@ import com.chetouani.gc.repository.EnterpriseRepositoryInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+ 
 import java.util.Set;
 
 @Service
@@ -51,5 +51,17 @@ public class EnterpriseService implements ServiceInterface<Enterprise> {
         contacts.add(selectedContact);
 
         return selectedEnterprise;
+    }
+
+    public Enterprise getById(Long id) {
+        checkIfEntityExist(enterpriseRepository, ENTITY_NAME, id);
+
+        return this.enterpriseRepository.findById(id).get();
+    }
+
+    public List<Contact> getContacts(Long id) {
+        checkIfEntityExist(enterpriseRepository, ENTITY_NAME, id);
+
+        return this.enterpriseRepository.findById(id).get().getContacts().stream().toList();
     }
 }
