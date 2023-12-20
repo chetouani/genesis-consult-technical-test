@@ -13,7 +13,7 @@ import com.chetouani.gc.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +23,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@AllArgsConstructor
-@RestController()
+@RequiredArgsConstructor
+@RestController
 @RequestMapping(path = "/contact", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Contact management")
 public class ContactController {
-
-    private ContactService service;
-    private ContactMapper mapper;
-    private ContactResponseMapper contactResponseMapper;
-    private EnterpriseResponseMapper enterpriseResponseMapper;
+ 
+    private final ContactService service;
+    private final ContactMapper mapper;
+    private final ContactResponseMapper contactResponseMapper;
+    private final EnterpriseResponseMapper enterpriseResponseMapper;
 
     @GetMapping("{id}")
     @Operation(summary = "Get contact by id")
@@ -52,7 +52,7 @@ public class ContactController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(enterpriseResponse);
-    }
+    } 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add a contact")

@@ -13,24 +13,23 @@ import com.chetouani.gc.service.EnterpriseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
+@RequiredArgsConstructor 
 @RestController
 @RequestMapping(path = "/enterprise", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Enterprise management")
 public class EnterpriseController {
 
-    private EnterpriseService service;
-    private EnterpriseMapper enterpriseMapper;
-    private EnterpriseResponseMapper enterpriseResponseMapper;
-    private ContactResponseMapper contactResponseMapper;
+    private final EnterpriseService service;
+    private final EnterpriseMapper enterpriseMapper;
+    private final EnterpriseResponseMapper enterpriseResponseMapper;
+    private final ContactResponseMapper contactResponseMapper;
 
     @GetMapping("{id}")
     @Operation(summary = "Get enterprise by id")

@@ -2,22 +2,22 @@ package com.chetouani.gc.service;
 
 import com.chetouani.gc.entity.Contact;
 import com.chetouani.gc.entity.Enterprise;
-import com.chetouani.gc.exception.IntegrityViolationException;
+import com.chetouani.gc.exception.EntityNotFoundException;
 import com.chetouani.gc.repository.ContactRepositoryInterface;
 import com.chetouani.gc.repository.EnterpriseRepositoryInterface;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+ 
 import java.util.Set;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EnterpriseService implements ServiceInterface<Enterprise> {
 
     static final String ENTITY_NAME = "Enterprise";
-    private EnterpriseRepositoryInterface enterpriseRepository;
-    private ContactRepositoryInterface contactRepository;
+    private final EnterpriseRepositoryInterface enterpriseRepository;
+    private final ContactRepositoryInterface contactRepository;
 
     @Override
     public Enterprise add(Enterprise enterprise) {
@@ -26,16 +26,16 @@ public class EnterpriseService implements ServiceInterface<Enterprise> {
 
     @Override
     public Enterprise update(Long id, Enterprise enterprise) {
-        checkIfEntityExist(enterpriseRepository, ENTITY_NAME, id);
+        return this.enterpriseRepository
+                .findById(id)
+                .map(e -> {
+                    e.setTvaNumber(enterprise.getTvaNumber());
+                    e.setAddress(enterprise.getAddress());
+                    return e;
+                }).orElseThrow(() -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_BY_ID_MESSAGE, ENTITY_NAME, id)));
+}
 
-        Enterprise existingEnterprise = this.enterpriseRepository.findById(id).get();
-
-        existingEnterprise.setTvaNumber(enterprise.getTvaNumber());
-        existingEnterprise.setAddress(enterprise.getAddress());
-
-        return this.enterpriseRepository.save(existingEnterprise);
-    }
-
+    @Transactional
     public Enterprise addContact(Long enterpriseId, Long contactId) {
         checkIfEntityExist(enterpriseRepository, ENTITY_NAME, enterpriseId);
         checkIfEntityExist(contactRepository, ContactService.ENTITY_NAME, contactId);
@@ -47,15 +47,10 @@ public class EnterpriseService implements ServiceInterface<Enterprise> {
         Set<Enterprise> enterprises = selectedContact.getEnterprises();
         Set<Contact> contacts = selectedEnterprise.getContacts();
 
-        if (enterprises.contains(selectedEnterprise)
-                || contacts.contains(selectedContact)) {
-            throw new IntegrityViolationException("This contact is already part of the enterprise");
-        }
-
         enterprises.add(selectedEnterprise);
         contacts.add(selectedContact);
 
-        return this.enterpriseRepository.save(selectedEnterprise);
+        return selectedEnterprise;
     }
 
     public Enterprise getById(Long id) {
