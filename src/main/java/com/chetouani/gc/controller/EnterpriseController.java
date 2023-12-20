@@ -8,19 +8,19 @@ import com.chetouani.gc.service.EnterpriseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/enterprise", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Enterprise management")
 public class EnterpriseController {
 
-    private EnterpriseService service;
-    private EnterpriseMapper enterpriseMapper;
+    private final EnterpriseService service;
+    private final EnterpriseMapper enterpriseMapper;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add an enterprise")

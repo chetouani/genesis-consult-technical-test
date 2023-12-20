@@ -1,35 +1,37 @@
 package com.chetouani.gc.service;
 
 import com.chetouani.gc.entity.Contact;
+import com.chetouani.gc.exception.EntityNotFoundException;
 import com.chetouani.gc.repository.ContactRepositoryInterface;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ContactService implements ServiceInterface<Contact> {
 
     static final String ENTITY_NAME = "Contact";
-    private ContactRepositoryInterface repository;
+    private final ContactRepositoryInterface repository;
 
     @Override
     public Contact add(Contact contact) {
         return this.repository.save(contact);
     }
 
+    @Transactional
     @Override
     public Contact update(Long id, Contact contact) {
-        checkIfEntityExist(repository, ENTITY_NAME, id);
-
-        Contact existingContact = this.repository.findById(id).get();
-
-        existingContact.setLastName(contact.getLastName());
-        existingContact.setFirstName(contact.getFirstName());
-        existingContact.setTvaNumber(contact.getTvaNumber());
-        existingContact.setContractType(contact.getContractType());
-        existingContact.setAddress(contact.getAddress());
-
-        return this.repository.save(existingContact);
+        return this.repository
+                .findById(id)
+                .map(c -> {
+                    c.setLastName(contact.getLastName());
+                    c.setFirstName(contact.getFirstName());
+                    c.setTvaNumber(contact.getTvaNumber());
+                    c.setContractType(contact.getContractType());
+                    c.setAddress(contact.getAddress());
+                    return c;
+                }).orElseThrow(() -> new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_BY_ID_MESSAGE, ENTITY_NAME, id)));
     }
 
     public void delete(Long id) {

@@ -5,18 +5,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
 @Setter
 @Getter
-@ToString
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UC_CONTACT", columnNames = {"lastName", "firstName", "contractType"})})
 public class Contact implements Serializable {

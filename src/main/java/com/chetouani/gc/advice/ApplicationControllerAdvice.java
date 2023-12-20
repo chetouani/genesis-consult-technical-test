@@ -24,11 +24,12 @@ class ApplicationControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler({Exception.class})
     public @ResponseBody ResponseEntity<ErrorResponse> handleException(Exception e) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(100, e.getMessage()));
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class})
+    // Mapper au niveau du service pour retourner au autre erreur que cele de la couche db
     public @ResponseBody ResponseEntity<ErrorResponse> handleException(DataIntegrityViolationException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
